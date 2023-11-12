@@ -5,31 +5,32 @@ const Header = () => {
   return (
     <header className="flex justify-between">
       <a href="" className="flex items-center gap-1">
-        <SendHorizontal className="-rotate-90 w-8 h-8" />
-        <span className="font-bold text-xl">airbnb</span>
+        <SendHorizontal className="h-8 w-8 -rotate-90" />
+        <span className="text-xl font-bold">airbnb</span>
       </a>
-      <div className="flex gap-2 border border-gray-300 rounded-full py-2 px-4 shadow-md shadow-gray-300">
+      <div className="flex gap-2 rounded-full border border-gray-300 px-4 py-2 shadow-md shadow-gray-300">
         <div>Anywhere</div>
-        <div className="border-l gray-300"></div>
+        <div className="border-l border-gray-300"></div>
         <div>Any week</div>
-        <div className="border-l gray-300"></div>
+        <div className="border-l border-gray-300"></div>
         <div>Add guests</div>
-        <button className="bg-primary text-white p-2 rounded-full">
-          <Search className="w-4 h-4" />
+        {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
+        <button className="bg-primary rounded-full p-2 text-white">
+          <Search className="h-4 w-4" />
         </button>
       </div>
-
+      border-
       <Link
         to="/login"
-        className="flex items-center gap-2 border border-gray-300 rounded-full py-2 px-4"
+        className="flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2"
       >
         <Menu />
-        <div className="bg-gray-500 text-white rounded-full border border-gray-500 overflow-hidden">
+        <div className="overflow-hidden rounded-full border border-gray-500 bg-gray-500 text-white">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-6 h-6 relative top-1"
+            className="relative top-1 h-6 w-6"
           >
             <path
               fillRule="evenodd"
