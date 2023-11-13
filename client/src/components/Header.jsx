@@ -19,7 +19,7 @@ const Header = () => {
           <Search className="h-4 w-4" />
         </button>
       </div>
-      border-
+
       <Link
         to="/login"
         className="flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2"
