@@ -4,11 +4,14 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const cookieParser = require("cookie-parser");
 const User = require("./models/User");
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
+
 app.use(
   cors({
     credentials: true,
@@ -21,11 +24,6 @@ mongoose.connect(process.env.MONGO_URL);
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = process.env.JWT_SECRET;
 
-console.log(jwtSecret);
-app.get("/test", (req, res) => {
-  res.json("test ok");
-});
-
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -36,10 +34,14 @@ app.post("/register", async (req, res) => {
       password: bcrypt.hashSync(password, bcryptSalt),
     });
 
-    res.json(userDoc);
+    return res.json(userDoc);
   } catch (e) {
-    res.status(422).json(e);
+    return res.status(422).json(e);
   }
+});
+
+app.get("/login", (req, res) => {
+  res.json("test");
 });
 
 app.post("/login", async (req, res) => {
@@ -47,25 +49,40 @@ app.post("/login", async (req, res) => {
 
   const userDoc = await User.findOne({ email });
 
-  if (!userDoc) {
-    res.json("not found");
-  }
-
-  const passOk = bcrypt.compareSync(password, userDoc.password);
-
-  if (passOk) {
-    jwt.sign(
-      { email: userDoc.email, id: userDoc._id },
-      jwtSecret,
-      { expiresIn: "24h" },
-      (err, token) => {
-        if (err) throw err;
-        res.cookie("token", token).json("pass ok");
-      }
-    );
+  if (userDoc) {
+    const passOk = bcrypt.compareSync(password, userDoc.password);
+    if (passOk) {
+      jwt.sign(
+        { email: userDoc.email, id: userDoc._id },
+        jwtSecret,
+        {},
+        (err, token) => {
+          if (err) throw err;
+          return res.cookie("token", token, { sameSite: "none" }).json(userDoc);
+        }
+      );
+    } else {
+      return res.status(422).json("bad pass");
+    }
   } else {
-    res.status(422).json("Wrong credentials");
+    return res.json("not found");
   }
 });
 
-app.listen(4000);
+app.get("/profile", (req, res) => {
+  const { token } = req.cookies;
+
+  if (token) {
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+      if (err) throw err;
+      const { name, email, _id } = await User.findById(userData.id);
+      return res.json({ name, email, _id, token });
+    });
+  } else {
+    return res.json(null);
+  }
+});
+
+app.listen(4000, () => {
+  console.log("Server is running on port 4000");
+});
