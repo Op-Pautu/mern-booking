@@ -83,6 +83,10 @@ app.get("/profile", (req, res) => {
   }
 });
 
+app.post("/logout", (req, res) => {
+  return res.clearCookie("token").json(true);
+});
+
 app.listen(4000, () => {
   console.log("Server is running on port 4000");
 });
