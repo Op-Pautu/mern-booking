@@ -2,6 +2,8 @@ import axios from "axios";
 import { UserContext } from "../context/UserContext";
 import { useContext, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import Places from "./Places";
+import { Home, List, User, User2 } from "lucide-react";
 
 const Account = () => {
   const [redirect, setRedirect] = useState(null);
@@ -27,9 +29,11 @@ const Account = () => {
   }
 
   function linkClasses(type = null) {
-    let classes = "px-6 py-2";
+    let classes = "inline-flex gap-1 px-6 py-2 rounded-full";
     if (type === subpage) {
-      classes += " bg-primary text-white rounded-full";
+      classes += " bg-primary text-white ";
+    } else {
+      classes += " bg-gray-200";
     }
 
     return classes;
@@ -42,12 +46,15 @@ const Account = () => {
     <div>
       <nav className="mt-8 flex w-full justify-center gap-2 mb-8">
         <Link className={linkClasses("profile")} to={"/account"}>
+          <User2 />
           My profile
         </Link>
         <Link className={linkClasses("bookings")} to={"/account/bookings"}>
+          <List />
           My bookings
         </Link>
         <Link className={linkClasses("places")} to={"/account/places"}>
+          <Home />
           My accomodations
         </Link>
       </nav>
@@ -59,6 +66,7 @@ const Account = () => {
           </button>
         </div>
       )}
+      {subpage === "places" && <Places />}
     </div>
   );
 };
