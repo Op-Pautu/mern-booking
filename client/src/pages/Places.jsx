@@ -55,6 +55,27 @@ export default function () {
     });
   };
 
+  const uploadPhoto = (e) => {
+    const files = e.target.files;
+    const data = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+      data.append("photos", files[i]);
+    }
+
+    axios
+      .post("/upload", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((response) => {
+        const { data: filenames } = response;
+        setFormData((prev) => ({
+          ...prev,
+          addedPhotos: [...prev.addedPhotos, ...filenames],
+        }));
+      });
+  };
+
   return (
     <div>
       {action !== "new" && (
@@ -106,21 +127,28 @@ export default function () {
                 Add&nbsp;photo
               </button>
             </div>
+
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 mt-2 gap-2">
               {formData.addedPhotos.length &&
                 formData.addedPhotos.map((link) => (
-                  <div>
+                  <div key={link} className="h-32 flex ">
                     <img
-                      src={"http://localhost:4000/uploads/" + link}
+                      src={"http://localhost:4000/" + link}
                       alt=""
-                      className="rounded-2xl"
+                      className="rounded-2xl w-full object-cover"
                     />
                   </div>
                 ))}
-              <button className="border bg-transparent rounded-2xl p-2 items-center text-2xl text-gray-600 flex gap-1 justify-center items-center">
+              <label className="h-32 border cursor-pointer bg-transparent rounded-2xl p-2 text-2xl text-gray-600 flex gap-1 justify-center items-center">
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={uploadPhoto}
+                />
                 <Upload />
                 Upload
-              </button>
+              </label>
             </div>
             {preInput("Description", "description of the place")}
 
